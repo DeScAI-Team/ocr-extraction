@@ -17,8 +17,8 @@ def main():
     parser.add_argument(
         "--output-base",
         type=str,
-        default="data",
-        help="Base output directory (default: data)"
+        default="/lustre/nvwulf/home/cnunberg/ondemand/data/sys/myjobs/projects/descai/ocr1-out",
+        help="Base output directory"
     )
     parser.add_argument(
         "--dpi",
