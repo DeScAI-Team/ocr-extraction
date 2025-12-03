@@ -41,6 +41,12 @@ data/
 
 PNG files are automatically deleted after Base64 conversion to save storage
 
+## Memory Efficiency
+
+The rasterization step processes PDFs **one page at a time** to handle large documents (800+ pages) without running out of memory. Memory usage stays constant (~20MB per page) regardless of PDF size.
+
+**Resume support**: If a job is interrupted, re-running will skip pages that have already been processed.
+
 ## Individual Steps
 
 You can also run each step separately:

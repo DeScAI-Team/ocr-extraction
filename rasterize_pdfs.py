@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path, pdfinfo_from_path
 from tqdm import tqdm
 
 def rasterize_pdfs(pdf_dir, output_dir, dpi=175):
@@ -19,10 +19,21 @@ def rasterize_pdfs(pdf_dir, output_dir, dpi=175):
         pdf_output_dir.mkdir(parents=True, exist_ok=True)
         
         try:
-            images = convert_from_path(str(pdf_file), dpi=dpi)
-            for idx, image in enumerate(images, start=1):
-                page_filename = pdf_output_dir / f"p{idx:04d}.png"
-                image.save(page_filename, "PNG")
+            # Get page count without loading images into memory
+            info = pdfinfo_from_path(str(pdf_file))
+            page_count = info["Pages"]
+            
+            # Process one page at a time to avoid OOM on large PDFs
+            for page_num in range(1, page_count + 1):
+                page_filename = pdf_output_dir / f"p{page_num:04d}.png"
+                if page_filename.exists():
+                    continue  # Skip already processed pages (resume support)
+                
+                images = convert_from_path(
+                    str(pdf_file), dpi=dpi,
+                    first_page=page_num, last_page=page_num
+                )
+                images[0].save(page_filename, "PNG")
         except Exception as e:
             print(f"error processing {pdf_file}: {e}")
             continue
