@@ -31,7 +31,8 @@ def rasterize_pdfs(pdf_dir, output_dir, dpi=175):
                 
                 images = convert_from_path(
                     str(pdf_file), dpi=dpi,
-                    first_page=page_num, last_page=page_num
+                    first_page=page_num, last_page=page_num,
+                    thread_count=4
                 )
                 images[0].save(page_filename, "PNG")
         except Exception as e:
